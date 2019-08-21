@@ -21,16 +21,7 @@
         <div class="Attacks">
           Damages: {{ currentMob.level - currentDamages }} / {{ currentMob.level }}
           <hr>
-          <ul>
-          <li
-            v-for="card in currentCards"
-            :key="card.level + card.family"
-            class="Card stacked"
-            :level="card.level"
-            :family="familyToEmoji(card.family)"
-          >
-          </li>
-          </ul>
+          <CardList :cards="currentCards" :stacked="true" />
         </div>
 
       </template>
@@ -55,8 +46,9 @@
 </template>
 
 <script>
-import Players from './components/Players.vue'
 import cards from './card.js'
+import Players from './components/Players.vue'
+import CardList from './components/CardList.vue'
 
 export default {
   name: 'app',
@@ -136,20 +128,6 @@ export default {
       this.currentCards = [];
       this.currentMob = undefined;
       this.nextTurn()
-    },
-    familyToEmoji(family) {
-      switch (family) {
-        case "SPADE":
-          return '♠'
-        case "DIAMOND":
-          return '♦'
-        case "HEART":
-          return '♥'
-        case "CLUB":
-          return '♣'
-        default:
-          return '🐑'
-      }
     }
   },
   computed: {
@@ -163,7 +141,7 @@ export default {
       return this.currentPlayerId >= 3 ? 0 : this.currentPlayerId + 1
     }
   },
-  components: { Players },
+  components: { Players, CardList },
   created() {
     this.distributeCards();
   }
