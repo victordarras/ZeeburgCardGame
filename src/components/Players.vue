@@ -8,7 +8,7 @@
           v-for="card in player.cards"
           @click="$emit('useCard', card)"
           class="Card stacked"
-          :key="card"
+          :key="card.level + card.family"
           :level="card.level"
           :family="familyToEmoji(card.family)"
         >

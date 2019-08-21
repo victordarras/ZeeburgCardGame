@@ -1,5 +1,12 @@
 <template>
   <div id="app">
+    <div class="Scores">
+      <label for="">Score</label>
+      <div class="Score" v-for="player in players" :key="player.name">
+        {{ player.name }}<br>
+        <strong>{{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong>
+      </div>
+    </div>
     <h1>Zeeburg</h1>
     <div class="Board">
       <button class="CardPile" @click="pickCard()">CARD ({{ cards.length }} remaining)</button>
@@ -17,7 +24,7 @@
           <ul>
           <li
             v-for="card in currentCards"
-            :key="card"
+            :key="card.level + card.family"
             class="Card stacked"
             :level="card.level"
             :family="familyToEmoji(card.family)"
@@ -36,7 +43,7 @@
       </ul> -->
       <div v-if="waitingForPlayer">
         <h1>Waiting for player <br>{{ currentPlayer.name }}</h1>
-        <button @click="waitingForPlayer = !waitingForPlayer">GO</button>
+        <button class="CardPile" @click="waitingForPlayer = !waitingForPlayer">Deck de {{ currentPlayer.name }}</button>
       </div>
       <Players
         v-else
@@ -72,15 +79,15 @@ export default {
   methods: {
     pickCard: function() {
       if (this.cards.length === 0) {
-        return alert('No card left.')
+        return alert('La pioche est vide.')
       }
       const newCard = this.cards.shift()
       this.currentPlayer.cards.push(newCard);
-      this.nextPlayer();
+      this.nextTurn();
     },
     pickMob: function() {
       if (this.mobs.length === 0) {
-        return alert('No mob left.')
+        return alert('Aucun monstre disponible.')
       }
       this.currentMob = this.mobs.shift();
     },
@@ -96,10 +103,14 @@ export default {
         return false;
       }
       switch (card.family) {
-        // case "K":
-        // case "Q":
-        // case "C":
-        // case "J":
+        case "K":
+          return false;
+        case "Q":
+          return false;
+        case "C":
+          return false;
+        case "J":
+          return false;
         default:
           this.currentCards.push(card)
           break;
@@ -109,19 +120,22 @@ export default {
       if (this.currentDamages >= this.currentMob.level) {
         this.killMob();
       } else {
-        this.nextPlayer();
+        this.nextTurn();
       }
     },
+    nextTurn() {
+      this.waitingForPlayer = true;
+      this.nextPlayer()
+    },
     nextPlayer() {
-      // this.waitingForPlayer = true;
-      this.currentPlayerId = this.currentPlayerId >= 3 ? 0 : this.currentPlayerId + 1;
+      this.currentPlayerId = this.nextPlayerId;
     },
     killMob() {
-      alert(`You killed the ${this.currentMob.name}(${this.currentMob.level}) !`)
+      alert(`Vous achevez ${this.currentMob.name} et récupérez ${this.currentMob.level}XP !`)
       this.currentPlayer.mobs.push(this.currentMob)
       this.currentCards = [];
       this.currentMob = undefined;
-      this.nextPlayer()
+      this.nextTurn()
     },
     familyToEmoji(family) {
       switch (family) {
@@ -144,6 +158,9 @@ export default {
     },
     currentDamages() {
       return this.currentCards.reduce((a,c) => a + parseInt(c.level), 0)
+    },
+    nextPlayerId() {
+      return this.currentPlayerId >= 3 ? 0 : this.currentPlayerId + 1
     }
   },
   components: { Players },
@@ -195,14 +212,37 @@ legend {
   font-weight: 600;
 }
 
+.Scores {
+  float: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.5em;
+}
+.Score {
+  min-width: 3em;
+  margin-left: 0.5em;
+  padding: 0.5em 1em;
+  border-radius: 1vh;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  text-align: center;
+}
 .CardPile {
   display: inline-block;
   vertical-align: top;
-  height: calc(1.6 * 15vh);
-  width: calc(1 * 15vh);;
+  height: calc(1.6 * 9vh);
+  width: calc(1 * 9vh);;
   margin: 1vh;
   border: 1px solid #000;
   border-radius: 1vh;
+  background: linear-gradient(
+      45deg,
+      transparent calc(50% - 1px),
+      rgba(0,0,0,0.2) 0,
+      rgba(0,0,0,0.2) calc(50% + 1px),
+      transparent 0
+    ) 0 0/ 0.5em 0.5em;
   box-shadow:
     0 1px 0 #fff,
     0 2px 0 #000,
@@ -248,28 +288,28 @@ legend {
 @keyframes shake-horizontal {
   0%,
   100% {
-    transform: translateX(0);
+    transform: translateY(0);
   }
 
   10%,
   30%,
   50%,
   70% {
-    transform: translateX(-2px);
+    transform: translateY(-2px);
   }
 
   20%,
   40%,
   60% {
-    transform: translateX(2px);
+    transform: translateY(2px);
   }
 
   80% {
-    transform: translateX(1px);
+    transform: translateY(1px);
   }
 
   90% {
-    transform: translateX(-1px);
+    transform: translateY(-1px);
   }
 }
 .MobPile:not(:disabled) {
