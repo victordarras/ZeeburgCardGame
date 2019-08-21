@@ -1,6 +1,6 @@
 <template>
   <div class="Players">
-    <section class="Player" v-for="player in players" :class="{active: players.indexOf(player) === currentPlayerId}">
+    <section class="Player" v-for="player in players" :class="{active: players.indexOf(player) === currentPlayerId}" :key="player.name">
 
       <legend>{{ player.name }}</legend>
       <ul>
@@ -8,6 +8,7 @@
           v-for="card in player.cards"
           @click="$emit('useCard', card)"
           class="Card stacked"
+          :key="card"
           :level="card.level"
           :family="familyToEmoji(card.family)"
         >
@@ -17,7 +18,7 @@
       <hr>
 
       <ul>
-        <li class="Card" v-for="mob in player.mobs">{{ mob.level }} • {{ mob.name }}</li>
+        <li class="Card" :key="mob.level" v-for="mob in player.mobs">{{ mob.level }} • {{ mob.name }}</li>
       </ul>
       <strong>Total: {{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong>
     </section>
@@ -47,7 +48,7 @@ export default {
     players:  {
       type: Array,
       required: true,
-      default: []
+      default: () => []
     },
     currentPlayerId: {
       type: Number,
@@ -77,6 +78,7 @@ export default {
 }
 
 .Card:hover {
+  cursor: pointer;
   box-shadow:
     inset 0 0 0 5px #fff,
     inset 0 0 0 6px #777,

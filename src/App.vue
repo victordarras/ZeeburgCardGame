@@ -17,6 +17,7 @@
           <ul>
           <li
             v-for="card in currentCards"
+            :key="card"
             class="Card stacked"
             :level="card.level"
             :family="familyToEmoji(card.family)"
@@ -33,8 +34,12 @@
       <ul>
         <li v-for="mob in mobs">{{ mob.name }}{{ mob.level }}</li>
       </ul> -->
-
+      <div v-if="waitingForPlayer">
+        <h1>Waiting for player <br>{{ currentPlayer.name }}</h1>
+        <button @click="waitingForPlayer = !waitingForPlayer">GO</button>
+      </div>
       <Players
+        v-else
         :players="players"
         :currentPlayerId="currentPlayerId"
         @useCard="useCard"
@@ -54,6 +59,7 @@ export default {
       mobs: cards.MOBS,
       currentMob: undefined,
       currentCards: [],
+      waitingForPlayer: false,
       players: [
         { name: 'vic', cards: [], mobs: [] },
         { name: 'tom', cards: [], mobs: [] },
@@ -66,7 +72,7 @@ export default {
   methods: {
     pickCard: function() {
       if (this.cards.length === 0) {
-        return console.log('No card left.')
+        return alert('No card left.')
       }
       const newCard = this.cards.shift()
       this.currentPlayer.cards.push(newCard);
@@ -74,7 +80,7 @@ export default {
     },
     pickMob: function() {
       if (this.mobs.length === 0) {
-        return console.log('No mob left.')
+        return alert('No mob left.')
       }
       this.currentMob = this.mobs.shift();
     },
@@ -99,7 +105,7 @@ export default {
           break;
       }
       this.currentPlayer.cards.splice(this.currentPlayer.cards.indexOf(card), 1)
-      console.log(this.currentDamages , this.currentMob.level)
+      // console.log(this.currentDamages , this.currentMob.level)
       if (this.currentDamages >= this.currentMob.level) {
         this.killMob();
       } else {
@@ -107,6 +113,7 @@ export default {
       }
     },
     nextPlayer() {
+      // this.waitingForPlayer = true;
       this.currentPlayerId = this.currentPlayerId >= 3 ? 0 : this.currentPlayerId + 1;
     },
     killMob() {
