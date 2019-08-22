@@ -9,8 +9,20 @@
     </div>
     <h1>Zeeburg</h1>
     <div class="Board">
-      <button class="CardPile" @click="pickCard()">CARD ({{ cards.length }} remaining)</button>
-      <button :disabled="currentMob" class="CardPile MobPile" @click="pickMob()">MOB ({{ mobs.length }} remaining)</button>
+      <button
+        @click="pickCard()"
+        :disabled="currentPlayer.cards.length >= 5"
+        class="CardPile"
+      >
+        CARD <br> ({{ cards.length }} remaining)
+      </button>
+      <button
+        @click="pickMob()"
+        :disabled="currentMob"
+        class="CardPile MobPile"
+      >
+        MOB <br> ({{ mobs.length }} remaining)
+      </button>
 
       <template v-if="currentMob">
         <div class="Mob">
