@@ -9,7 +9,7 @@
       :level="card.level"
       :family="familyToEmoji(card.family)"
     >
-      <!-- {{ card.level }} of {{ card.family }} -->
+      {{ card.family ? '' : card.name}}
     </li>
   </ul>
 </template>
@@ -28,7 +28,7 @@ export default {
         case "CLUB":
           return '♣'
         default:
-          return '🐑'
+          return ''
       }
     }
   },

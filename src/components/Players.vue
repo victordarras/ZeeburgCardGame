@@ -8,7 +8,6 @@
 
       <ul>
         <CardList :cards="player.mobs" @useCard="useCard" :stacked="true" />
-        <!-- <li class="Card" :key="mob.level" v-for="mob in player.mobs">{{ mob.level }} • {{ mob.name }}</li> -->
       </ul>
       <strong>Total: {{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong>
     </section>

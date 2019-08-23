@@ -61,27 +61,28 @@ let DECK = shuffle([
 ]);
 
 let MOBS = shuffle([
-  { name: "le Monde", level: 21 },
-  { name: "le Soleil",level: 19 },
-  { name: "la Lune",level: 18 },
-  { name: "l'Étoile", level: 17 },
-  { name: "la Tour",level: 16 },
-  { name: "le Diable",level: 15 },
-  { name: "Tempérance", level: 14 },
-  { name: "la Mort",level: 13 },
-  { name: "le Pendu", level: 12 },
+  { name: "Le Monde", level: 21 },
+  { name: "L'Ange'", level: 20 },
+  { name: "Le Soleil",level: 19 },
+  { name: "La Lune",level: 18 },
+  { name: "L'Étoile", level: 17 },
+  { name: "La Tour",level: 16 },
+  { name: "Le Diable",level: 15 },
+  { name: "La Tempérance", level: 14 },
+  { name: "La Mort",level: 13 },
+  { name: "Le Pendu", level: 12 },
   { name: "La Force", level: 11 },
-  { name: "la Roue de Fortune", level: 10 },
-  { name: "l'Ermite", level: 9 },
-  { name: "la Justice", level: 8 },
-  { name: "le Chariot", level: 7 },
-  { name: "les Amants", level: 6 },
-  { name: "le Pape",level: 5 },
-  { name: "l'Empereur", level: 4 },
-  { name: "l'Impératrice",level: 3 },
-  { name: "la Papesse", level: 2 },
-  { name: "et le Bateleur", level: 1 },
-  { name: "le Fou", level: 31 }
+  { name: "La Roue de Fortune", level: 10 },
+  { name: "L'Ermite", level: 9 },
+  { name: "La Justice", level: 8 },
+  { name: "Le Chariot", level: 7 },
+  { name: "Les Amants", level: 6 },
+  { name: "Le Pape",level: 5 },
+  { name: "L'Empereur", level: 4 },
+  { name: "L'Impératrice",level: 3 },
+  { name: "La Papesse", level: 2 },
+  { name: "Le Bateleur", level: 1 },
+  { name: "Le Fou", level: 31 }
 ])
 
 function shuffle(cards) {
