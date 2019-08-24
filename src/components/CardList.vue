@@ -55,7 +55,7 @@ export default {
       } else {
         kind = "t"; // tarot
       }
-      return `background-image: url('./cardgame/${kind}${card.level}.svg');`
+      return `background-image: url('./cardgame/${kind}${card.level}.png');`
     }
   },
   props: {

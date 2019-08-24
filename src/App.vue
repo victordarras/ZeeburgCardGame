@@ -4,7 +4,7 @@
     <div class="Scores">
       <div class="Score" v-for="player in players" :key="player.name">
         <strong>{{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong><br>
-        {{ player.name }}
+        {{ player.name }}({{ player.cards.length }})
       </div>
     </div>
 
@@ -104,12 +104,12 @@ export default {
       this.currentCards.push(card);
       this.currentPlayer.cards.splice(this.currentPlayer.cards.indexOf(card), 1);
 
+      this.pickCard();
       if (this.currentDamages >= this.currentMob.level) {
         this.killMob();
       } else {
         this.nextTurn();
       }
-      this.pickCard();
     },
     nextPlayer() {
       this.currentPlayerId = this.currentPlayerId >= 3 ? 0 : this.currentPlayerId + 1;
@@ -128,10 +128,10 @@ export default {
   },
   computed: {
     currentPlayer() {
-      return this.players[this.currentPlayerId]
+      return this.players[this.currentPlayerId];
     },
     currentDamages() {
-      return this.currentCards.reduce((a,c) => a + parseInt(c.level), 0)
+      return this.currentCards.reduce((a,c) => a + parseInt(c.level), 0);
     }
   },
   components: { Player, CardList },
