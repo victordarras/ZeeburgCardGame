@@ -1,18 +1,16 @@
 <template>
   <div id="app">
+    <h1 class="Title">Zeeburg</h1>
     <div class="Scores">
-      <label for="">Score</label>
       <div class="Score" v-for="player in players" :key="player.name">
-        {{ player.name }}<br>
-        <strong>{{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong>
+        <strong>{{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong><br>
+        {{ player.name }}
       </div>
     </div>
-    <h1>Zeeburg</h1>
 
     <div class="Board">
       <button
-        @click="pickCard()"
-        :disabled="currentPlayer.cards.length >= 5"
+        @click="pickCard(true)"
         class="CardPile"
       >
         CARD<br />({{ cards.length }} remaining)
@@ -26,35 +24,35 @@
       </button>
 
       <template v-if="currentMob">
-        <div class="Mob">
-          <div class="Card" style="text-align:center">
-            {{ currentMob.level }}<br/>{{ currentMob.name }}
-          </div>
-        </div>
+        <CardList :cards="[currentMob]" />
+
+        <CardList :cards="currentCards" :stacked="true" />
+
         <div class="Attacks">
+
           Damages: {{ currentMob.level - currentDamages }} / {{ currentMob.level }}
-          <hr>
-          <CardList :cards="currentCards" :stacked="true" />
         </div>
 
       </template>
     </div>
+
+    <div class="Players">
       <div v-if="waitingForPlayer">
-        <h1>Waiting for player <br>{{ currentPlayer.name }}</h1>
+        <h1>Waiting for player {{ currentPlayer.name }}</h1>
         <button class="CardPile" @click="waitingForPlayer = !waitingForPlayer">Deck de {{ currentPlayer.name }}</button>
       </div>
-      <Players
-        v-else
-        :players="players"
-        :currentPlayerId="currentPlayerId"
+      <Player
+         v-else
+        :player="currentPlayer"
         @useCard="useCard"
       />
+    </div>
   </div>
 </template>
 
 <script>
 import cards from './card.js'
-import Players from './components/Players.vue'
+import Player from './components/Player.vue'
 import CardList from './components/CardList.vue'
 
 export default {
@@ -76,13 +74,15 @@ export default {
     }
   },
   methods: {
-    pickCard: function() {
+    pickCard: function(turn) {
       if (this.cards.length === 0) {
         return alert('La pioche est vide.')
       }
       const newCard = this.cards.shift()
       this.currentPlayer.cards.push(newCard);
-      this.nextTurn();
+      if (turn) {
+        this.nextTurn();
+      }
     },
     pickMob: function() {
       if (this.mobs.length === 0) {
@@ -101,21 +101,9 @@ export default {
       if (this.currentMob === undefined) {
         return false;
       }
-      switch (card.family) {
-        case "K":
-          return false;
-        case "Q":
-          return false;
-        case "C":
-          return false;
-        case "J":
-          return false;
-        default:
-          this.currentCards.push(card)
-          break;
-      }
-      this.currentPlayer.cards.splice(this.currentPlayer.cards.indexOf(card), 1)
-      // console.log(this.currentDamages , this.currentMob.level)
+      this.currentCards.push(card);
+      this.currentPlayer.cards.splice(this.currentPlayer.cards.indexOf(card), 1);
+
       if (this.currentDamages >= this.currentMob.level) {
         this.killMob();
       } else {
@@ -123,19 +111,19 @@ export default {
       }
       this.pickCard();
     },
-    nextTurn() {
-      this.waitingForPlayer = true;
-      this.nextPlayer()
-    },
     nextPlayer() {
-      this.currentPlayerId = this.nextPlayerId;
+      this.currentPlayerId = this.currentPlayerId >= 3 ? 0 : this.currentPlayerId + 1;
     },
     killMob() {
       alert(`Vous achevez ${this.currentMob.name} et récupérez ${this.currentMob.level}XP !`)
       this.currentPlayer.mobs.push(this.currentMob)
-      this.currentCards = [];
       this.currentMob = undefined;
+      this.currentCards = [];
       this.nextTurn()
+    },
+    nextTurn() {
+      this.waitingForPlayer = true;
+      this.nextPlayer()
     }
   },
   computed: {
@@ -144,12 +132,9 @@ export default {
     },
     currentDamages() {
       return this.currentCards.reduce((a,c) => a + parseInt(c.level), 0)
-    },
-    nextPlayerId() {
-      return this.currentPlayerId >= 3 ? 0 : this.currentPlayerId + 1
     }
   },
-  components: { Players, CardList },
+  components: { Player, CardList },
   created() {
     this.distributeCards();
   }

@@ -8,8 +8,9 @@
       :key="card.level + card.family"
       :level="card.level"
       :family="familyToEmoji(card.family)"
+      :style="bgUrl(card)"
     >
-      {{ card.family ? '' : card.name}}
+      <!-- {{ card.family ? '' : card.name}} -->
     </li>
   </ul>
 </template>
@@ -30,6 +31,31 @@ export default {
         default:
           return ''
       }
+    },
+    bgUrl(card) {
+      let kind;
+      if (card.family) {
+        switch (card.family) {
+          case "SPADE":
+            kind = "s"
+            break;
+          case "DIAMOND":
+            kind = "d"
+            break;
+          case "HEART":
+            kind = "h"
+            break;
+          case "CLUB":
+            kind = "c"
+            break;
+          default:
+            kind = Array.from(card.family).shift();
+            break;
+        }
+      } else {
+        kind = "t"; // tarot
+      }
+      return `background-image: url('./cardgame/${kind}${card.level}.svg');`
     }
   },
   props: {
@@ -47,12 +73,4 @@ export default {
 
 <style scoped>
 
-.Card:hover {
-  cursor: pointer;
-  box-shadow:
-    inset 0 0 0 5px #fff,
-    inset 0 0 0 6px #777,
-    5px 3px 15px rgba(0,0,0,0.2);
-  transform: translateY(-3px) rotate(1deg);
-}
 </style>
