@@ -1,8 +1,8 @@
 <template>
-  <ul>
+  <ul class="Cards">
     <li
       class="Card"
-      :class="{ stacked }"
+      :class="{ stacked, handed }"
       v-for="card in cards"
       @click="$emit('useCard', card)"
       :key="card.level + card.family"
@@ -64,6 +64,10 @@ export default {
       type: Array
     },
     stacked: {
+      type: Boolean,
+      default: false
+    },
+    handed: {
       type: Boolean,
       default: false
     }

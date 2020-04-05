@@ -1,52 +1,75 @@
 <template>
   <div id="app">
-    <h1 class="Title">Zeeburg</h1>
-    <div class="Scores">
-      <div class="Score" v-for="player in players" :key="player.name">
-        <strong>{{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong><br>
-        {{ player.name }}({{ player.cards.length }})
-      </div>
-    </div>
-
     <div class="Board">
-      <button
-        @click="pickCard(true)"
-        class="CardPile"
-      >
-        CARD<br />({{ cards.length }} remaining)
-      </button>
-      <button
-        @click="pickMob()"
-        :disabled="currentMob"
-        class="CardPile MobPile"
-      >
-        MOB<br />({{ mobs.length }} remaining)
-      </button>
+      <div class="rules">
+        <ul>
+          <li><b>Les cartes</b> de 1 à 10 sont des dégâts direct.</li>
+          <li><b>Les figures</b> créent différents effets (à utiliser avec une carte 1-10):</li>
+          <li><b>Les valets</b> Multiplie x2 la carte dégât jouée</li>
+          <li><b>Les cavaliers</b> Augmente le niveau du monstre</li>
+          <li><b>Les dames</b> Divise la puissance du monstre par deux </li>
+          <li><b>Les rois</b> Offre une carte supplémentaire de la pioche</li>
+          <li><b>L'Excuse</b> (joker): Permet de prendre n'importe qu'elle figure posé devant n'importe qu'elle joueur (vu plus bas, il n'y a pas de carte devant les joueurs à prior)</li>
+        </ul>
 
-      <template v-if="currentMob">
-        <CardList :cards="[currentMob]" />
-
-        <CardList :cards="currentCards" :stacked="true" />
-
-        <div class="Attacks">
-
-          Damages: {{ currentMob.level - currentDamages }} / {{ currentMob.level }}
-        </div>
-
-      </template>
-    </div>
-
-    <div class="Players">
-      <div v-if="waitingForPlayer">
-        <h1>Waiting for player {{ currentPlayer.name }}</h1>
-        <button class="CardPile" @click="waitingForPlayer = !waitingForPlayer">Deck de {{ currentPlayer.name }}</button>
+        <p>Si les dégâts sont supérieurs au niveau du monstres, le dernier attaquant gagne l'expérience et garde la carte monstre. </p>
+        <p>Si les dégâts sont inférieurs, c'est au joueur suivant.</p>
       </div>
-      <Player
-         v-else
-        :player="currentPlayer"
-        @useCard="useCard"
-      />
+
+      <div class="Scores">
+        <div
+          class="Score"
+          :class="player.id === currentPlayerId ? 'active' : '' "
+          v-for="player in players"
+          :key="player.name"
+        >
+          <h5>{{ player.name }}</h5>
+          <p><strong>{{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong></p>
+        </div>
+      </div>
+
+      <div class="Center">
+        <button
+          @click="pickCard(true)"
+          class="CardPile"
+        >
+          <span>CARD<br />({{ cards.length }} remaining)</span>
+        </button>
+
+        <button
+          @click="pickMob()"
+          :disabled="currentMob"
+          class="CardPile MobPile"
+        >
+          <span>MOB<br />({{ mobs.length }} remaining)</span>
+        </button>
+
+        <template v-if="currentMob">
+          <CardList :cards="[currentMob]" />
+
+          <CardList :cards="currentCards" :stacked="true" />
+
+          <div class="Damages">
+            Damages: {{ currentMob.level - currentDamages }} / {{ currentMob.level }}
+          </div>
+
+        </template>
+      </div>
+
+
+      <div class="Players">
+        <div v-if="waitingForPlayer">
+          <h1>Waiting for player {{ currentPlayer.name }}</h1>
+          <button class="CardPile" @click="waitingForPlayer = !waitingForPlayer">Deck de {{ currentPlayer.name }}</button>
+        </div>
+        <Player
+           v-else
+          :player="currentPlayer"
+          @useCard="useCard"
+        />
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -65,10 +88,10 @@ export default {
       currentCards: [],
       waitingForPlayer: false,
       players: [
-        { name: 'vic', cards: [], mobs: [] },
-        { name: 'tom', cards: [], mobs: [] },
-        { name: 'val', cards: [], mobs: [] },
-        { name: 'yan', cards: [], mobs: [] }
+        { id: 0, name: 'vic', cards: [], mobs: [] },
+        { id: 1, name: 'tom', cards: [], mobs: [] },
+        { id: 2, name: 'val', cards: [], mobs: [] },
+        { id: 3, name: 'yan', cards: [], mobs: [] }
       ],
       currentPlayerId: 0
     }

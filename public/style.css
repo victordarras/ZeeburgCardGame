@@ -8,18 +8,9 @@ body{
   font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #333;
-  background-color: #F5F5F5;
   overflow: hidden;
-  min-height: 100vh;
 }
 
-.Board {
-  max-width: 62rem;
-  margin: 2vh auto 2vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 5fr
-}
 .Title {
   text-align: center;
 }
@@ -46,42 +37,64 @@ legend {
   font-size: 1.25em;
   font-weight: 600;
 }
-.Attacks {
-  grid-column-start: 4;
+.Board {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 30vh 1fr 30vh;
+  grid-template-rows: 15vw 1fr 25vw;
+  grid-template-areas:
+    "hd hd hd"
+    "score center rules"
+    "player player player";
+  height: 100vh;
+  background: url('./cardgame/bg.png') center top / cover;
+  color: #fff;
+  line-height: 1.4;
+}
+.Center {
+  grid-area: center;
+  display: flex;
+  flex-flow: row wrap;
+}
+.rules {
+  grid-area: rules;
+  font-size: 0.75em;
 }
 .Scores {
   display: flex;
+  flex-flow: column;
   align-items: center;
   justify-content: center;
   padding: 1em 1em;
-  position: absolute;
-  bottom: 0;
-  background: #222;
-  width: 100%;
-  color: #FFF;
+  grid-area: score;
 }
 .Score {
-  min-width: 4em;
-  margin-left: 0.5em;
+  width: 100%;
+  margin: 1vh;
   padding: 0.5em 1em;
-  border-radius: 1vh;
-  border: 1px solid #ddd;
+  border-radius: 0.5vh;
   background-color: #fff;
   color: #000;
   text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+.Score:not(.active) {
+  opacity: 0.7;
+  transform: translateX(-2vh);
 }
 .Players {
   padding: 10px;
   text-align: center;
-  order: -1;
-  grid-column: 1/4;
-  background-color: #eee;
+  grid-area: player;
+}
+.Cards {
+  white-space: nowrap;
 }
 .CardPile, .Card {
-
   display: inline-block;
   vertical-align: top;
   height: calc(1.44 * 12vh);
+  /*height: calc(1.58 * 12vh);*/
   width: calc(1 * 12vh);
   margin: 1vh;
   border-radius: 1vh;
@@ -92,10 +105,10 @@ legend {
 .CardPile {
   background: linear-gradient(
       45deg,
-      transparent calc(50% - 1px),
+      #fff calc(50% - 1px),
       rgba(0,0,0,0.2) 0,
       rgba(0,0,0,0.2) calc(50% + 1px),
-      transparent 0
+      #fff 0
     ) 0 0/ 0.5em 0.5em;
   box-shadow:
     0 1px 0 #fff,
@@ -107,18 +120,32 @@ legend {
     0 10px 5px rgba(0,0,0,0.1)
   ;
 }
+.CardPile > span {
+  background: #fff;
+  padding: 2px;
+}
 .Card {
   text-align: left;
   box-shadow: 0 1px 5px rgba(0,0,0,0.1);
   transition: transform 0.1s;
 }
 .Card.stacked:not(:first-child) {
-  margin-left: -5vh;
+  margin-left: -8vh;
 }
+.Card.handed {
+  transform-origin: bottom;
+}
+.Card.handed:nth-child(1) {transform: rotate(-10deg) translateY(10%);}
+.Card.handed:nth-child(2) {transform: rotate(-5deg) translateY(3%);}
+.Card.handed:nth-child(3) {transform: rotate(0) translateY(0);}
+.Card.handed:nth-child(4) {transform: rotate(5deg) translateY(3%);}
+.Card.handed:nth-child(5) {transform: rotate(10deg) translateY(10%);}
+
 .Card.stacked:hover {
   cursor: pointer;
   box-shadow: 5px 3px 15px rgba(0,0,0,0.2);
-  transform: translateY(-3px) rotate(1deg);
+  z-index: 1;
+  transform: scale(1.1);
 }
 [family="♦"], [family="♥"] {
   color: softblue;
