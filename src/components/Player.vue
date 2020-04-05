@@ -32,9 +32,6 @@ export default {
   },
   methods: {
     useCard: function(card) {
-      if (card.level > 10) {
-        return this.currentStack.push(card)
-      }
       this.$emit('useCard', card)
     }
   },

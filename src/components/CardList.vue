@@ -10,7 +10,6 @@
       :family="familyToEmoji(card.family)"
       :style="bgUrl(card)"
     >
-      <!-- {{ card.family ? '' : card.name}} -->
     </li>
   </ul>
 </template>

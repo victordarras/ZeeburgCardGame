@@ -1,0 +1,53 @@
+@import '_base'
+@import '_cards'
+
+.Board
+  height: 100vh
+  display: grid
+  grid-template-columns: 30vw 1fr 30vw
+  grid-template-rows: 20vh 1fr 55vh
+  grid-template-areas: "hd hd hd" "score center rules" "player player player"
+  height: 100vh
+  background: url('./img/bg.png') center top / cover
+  color: #fff
+  line-height: 1.4
+
+.Center
+  grid-area: center
+  display: flex
+  flex-flow: row wrap
+
+.rules
+  grid-area: rules
+  font-size: 0.875em
+
+.Scores
+  display: flex
+  flex-flow: column
+  align-items: center
+  justify-content: center
+  padding: 1em 1em
+  grid-area: score
+  max-width: 20em
+
+.Score
+  width: 80%
+  margin: 1vh
+  padding: 0.5em 1em
+  border-radius: 0.5vh
+  background-color: #fff
+  color: #000
+  text-align: center
+  transition: all 0.3s ease-in-out
+  .value,
+  .title
+    margin: 0
+  &:not(.active)
+    opacity: 0.7
+    transform: translateX(-2vh)
+
+.Players
+  padding: 10px
+  text-align: center
+  grid-area: player
+

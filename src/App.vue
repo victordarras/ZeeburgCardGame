@@ -19,40 +19,27 @@
       <div class="Scores">
         <div
           class="Score"
-          :class="player.id === currentPlayerId ? 'active' : '' "
-          v-for="player in players"
-          :key="player.name"
+          :class="p.id === currentPlayerId ? 'active' : '' "
+          v-for="p in players"
+          :key="p.name"
         >
-          <h5>{{ player.name }}</h5>
-          <p><strong>{{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong></p>
+          <h3 class="title">{{ p.name }}</h3>
+          <p class="value">{{ playerScore(p)}} point{{ playerScore(p) > 1 ? 's' : ''}} </p>
         </div>
       </div>
 
       <div class="Center">
-        <button
-          @click="pickCard(true)"
-          class="CardPile"
-        >
-          <span>CARD<br />({{ cards.length }} remaining)</span>
+        <button @click="pickCard(true)" class="CardPile" >
+          <span>{{ cards.length }} CARD{{ cards.length ? 'S' : ''}}</span>
         </button>
 
-        <button
-          @click="pickMob()"
-          :disabled="currentMob"
-          class="CardPile MobPile"
-        >
-          <span>MOB<br />({{ mobs.length }} remaining)</span>
+        <button @click="pickMob()" :disabled="currentMob" class="CardPile MobPile">
+          <span>{{ mobs.length }} MOB{{ mobs.length ? 'S' : ''}}</span>
         </button>
 
         <template v-if="currentMob">
           <CardList :cards="[currentMob]" />
-
           <CardList :cards="currentCards" :stacked="true" />
-
-          <div class="Damages">
-            Damages: {{ currentMob.level - currentDamages }} / {{ currentMob.level }}
-          </div>
-
         </template>
       </div>
 
@@ -60,13 +47,17 @@
       <div class="Players">
         <div v-if="waitingForPlayer">
           <h1>Waiting for player {{ currentPlayer.name }}</h1>
-          <button class="CardPile" @click="waitingForPlayer = !waitingForPlayer">Deck de {{ currentPlayer.name }}</button>
+          <button class="CardPile" @click="waitingForPlayer = !waitingForPlayer">
+            <span>{{ currentPlayer.name }}'s deck</span>
+          </button>
         </div>
-        <Player
-           v-else
-          :player="currentPlayer"
-          @useCard="useCard"
-        />
+        <template v-else>
+          <Player
+            :player="currentPlayer"
+            @useCard="useCard"
+          />
+          <p v-if="currentMob">{{ currentMob.level - currentDamages }} / {{ currentMob.level }}</p>
+        </template>
       </div>
     </div>
 
@@ -88,15 +79,19 @@ export default {
       currentCards: [],
       waitingForPlayer: false,
       players: [
-        { id: 0, name: 'vic', cards: [], mobs: [] },
-        { id: 1, name: 'tom', cards: [], mobs: [] },
-        { id: 2, name: 'val', cards: [], mobs: [] },
-        { id: 3, name: 'yan', cards: [], mobs: [] }
+        { id: 0, name: 'Victor', cards: [], mobs: [] },
+        { id: 1, name: 'Tom', cards: [], mobs: [] },
+        { id: 2, name: 'Valentin', cards: [], mobs: [] },
+        { id: 3, name: 'Yann', cards: [], mobs: [] }
       ],
-      currentPlayerId: 0
+      currentPlayerId: 0,
+      currentDamages: 0
     }
   },
   methods: {
+    playerScore(player) {
+      return player.mobs.reduce((a, c) => a + c.level,0)
+    },
     pickCard: function(turn) {
       if (this.cards.length === 0) {
         return alert('La pioche est vide.')
@@ -125,6 +120,7 @@ export default {
         return false;
       }
       this.currentCards.push(card);
+      this.currentDamages += card.level;
       this.currentPlayer.cards.splice(this.currentPlayer.cards.indexOf(card), 1);
 
       this.pickCard();
@@ -142,6 +138,7 @@ export default {
       this.currentPlayer.mobs.push(this.currentMob)
       this.currentMob = undefined;
       this.currentCards = [];
+      this.currentDamages = 0;
       this.nextTurn()
     },
     nextTurn() {
@@ -153,9 +150,9 @@ export default {
     currentPlayer() {
       return this.players[this.currentPlayerId];
     },
-    currentDamages() {
-      return this.currentCards.reduce((a,c) => a + parseInt(c.level), 0);
-    }
+    // currentDamages() {
+    //   return this.currentCards.reduce((a,c) => a + parseInt(c.level), 0);
+    // }
   },
   components: { Player, CardList },
   created() {
@@ -163,3 +160,6 @@ export default {
   }
 }
 </script>
+
+
+<style lang="stylus" src="./assets/style.styl"></style>
