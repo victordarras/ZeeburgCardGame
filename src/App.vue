@@ -1,20 +1,7 @@
 <template>
   <div id="app">
     <div class="Board">
-      <div class="rules">
-        <ul>
-          <li><b>Les cartes</b> de 1 à 10 sont des dégâts direct.</li>
-          <li><b>Les figures</b> créent différents effets (à utiliser avec une carte 1-10):</li>
-          <li><b>Les valets</b> Multiplie x2 la carte dégât jouée</li>
-          <li><b>Les cavaliers</b> Augmente le niveau du monstre</li>
-          <li><b>Les dames</b> Divise la puissance du monstre par deux </li>
-          <li><b>Les rois</b> Offre une carte supplémentaire de la pioche</li>
-          <li><b>L'Excuse</b> (joker): Permet de prendre n'importe qu'elle figure posé devant n'importe qu'elle joueur (vu plus bas, il n'y a pas de carte devant les joueurs à prior)</li>
-        </ul>
-
-        <p>Si les dégâts sont supérieurs au niveau du monstres, le dernier attaquant gagne l'expérience et garde la carte monstre. </p>
-        <p>Si les dégâts sont inférieurs, c'est au joueur suivant.</p>
-      </div>
+      <Rules />
 
       <div class="Scores">
         <div
@@ -33,7 +20,7 @@
           <span>{{ cards.length }} CARD{{ cards.length ? 'S' : ''}}</span>
         </button>
 
-        <button @click="pickMob()" :disabled="currentMob" class="CardPile MobPile">
+        <button @click="pickMob()" :disabled="currentMob" class="CardPile shake">
           <span>{{ mobs.length }} MOB{{ mobs.length ? 'S' : ''}}</span>
         </button>
 
@@ -47,7 +34,7 @@
       <div class="Players">
         <div v-if="waitingForPlayer">
           <h1>Waiting for player {{ currentPlayer.name }}</h1>
-          <button class="CardPile" @click="waitingForPlayer = !waitingForPlayer">
+          <button class="CardPile shake" @click="waitingForPlayer = !waitingForPlayer">
             <span>{{ currentPlayer.name }}'s deck</span>
           </button>
         </div>
@@ -56,7 +43,7 @@
             :player="currentPlayer"
             @useCard="useCard"
           />
-          <p v-if="currentMob">{{ currentMob.level - currentDamages }} / {{ currentMob.level }}</p>
+          <!-- <p v-if="currentMob">{{ currentMob.level - currentDamages }} / {{ currentMob.level }}</p> -->
         </template>
       </div>
     </div>
@@ -66,6 +53,7 @@
 
 <script>
 import cards from './card.js'
+import Rules from './components/Rules.vue'
 import Player from './components/Player.vue'
 import CardList from './components/CardList.vue'
 
@@ -124,11 +112,14 @@ export default {
       this.currentPlayer.cards.splice(this.currentPlayer.cards.indexOf(card), 1);
 
       this.pickCard();
-      if (this.currentDamages >= this.currentMob.level) {
-        this.killMob();
-      } else {
-        this.nextTurn();
-      }
+
+      setTimeout(() => {
+        if (this.currentDamages >= this.currentMob.level) {
+          this.killMob();
+        } else {
+          this.nextTurn();
+        }
+      }, 5000)
     },
     nextPlayer() {
       this.currentPlayerId = this.currentPlayerId >= 3 ? 0 : this.currentPlayerId + 1;
@@ -154,7 +145,7 @@ export default {
     //   return this.currentCards.reduce((a,c) => a + parseInt(c.level), 0);
     // }
   },
-  components: { Player, CardList },
+  components: { Player, CardList, Rules },
   created() {
     this.distributeCards();
   }

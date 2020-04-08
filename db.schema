@@ -1,0 +1,23 @@
+Game: {
+  id: Int,
+  players: Array,
+  currentPlayer: Int,
+  cards: Array,
+  currentMob: Int,
+  mobs: Array
+}
+Player: {
+  id: Int,
+  nickname: String,
+  cards: Array,
+  mobs: Array,
+  gameId: Int
+}
+Card: {
+  family: String,
+  level: Int
+}
+Mobs: {
+  name: String,
+  level: Int
+}

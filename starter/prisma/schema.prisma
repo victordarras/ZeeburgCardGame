@@ -1,0 +1,37 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Game {
+  id              Int       @id @default(autoincrement())
+  players         Player[]
+  currentPlayer   Int
+  cards           Card[]
+  mobs            Mob[]
+  currentMob      Int
+}
+
+model Player {
+  id              Int       @id @default(autoincrement())
+  nickname        String    @unique
+  cards           Card[]
+  mobs            Mob[]
+  game            Game?
+}
+
+model Card {
+  id              Int       @id @default(autoincrement())
+  family          String
+  level           Int
+}
+
+model Mob {
+  id              Int       @id @default(autoincrement())
+  level           Int       @unique
+  name            String
+}

@@ -4,14 +4,16 @@
 .CardPile, .Card
   display: inline-block
   vertical-align: top
-  height: calc(1.44 * 14vh)
+  height: calc(1.45 * 14vh)
   // height: calc(1.58 * 14vh)
   width: calc(1 * 14vh)
   margin: 1vh
-  border-radius: 1vh
+  border-radius: 0.3rem
   background-color: #fff
-  background-size: 102% auto
+  background-size: 101% auto
   background-position: center
+  background-repeat: no-repeat
+  transition: transform 0.16s ease-in-out
 .CardPile
   background:
     linear-gradient(
@@ -32,15 +34,16 @@
   & > span
     background: #fff
     padding: 2px 4px
+  &:hover:not(:disabled)
+    transform: translateY(-1vh)
   &:disabled
     opacity: 0.5
-  &.MobPile:not(:disabled)
+  &.shake:not(:disabled)
     animation: shake-horizontal 2s ease-in-out infinite
 
 .Card
   text-align: left
   box-shadow: 0 1px 5px rgba(0,0,0,0.1)
-  transition: transform 0.1s
   &.stacked:not(:first-child)
     margin-left: -8vh
   &.handed
@@ -61,3 +64,11 @@
     box-shadow: 5px 3px 15px rgba(0,0,0,0.2)
     z-index: 1
     transform: scale(1.1)
+  for level in 0..21
+    &.t{level}
+      background-image  url('./img/cardgame/t'+level+'.png')
+  //
+  for family in 's' 'd' 'h' 'c'
+    for level in 1..14
+      &.{family+level}
+        background-image  url('./img/cardgame/'+family+level+'.png')

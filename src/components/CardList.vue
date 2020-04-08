@@ -2,13 +2,12 @@
   <ul class="Cards">
     <li
       class="Card"
-      :class="{ stacked, handed }"
+      :class="[bgClass(card), { stacked, handed }]"
       v-for="card in cards"
       @click="$emit('useCard', card)"
       :key="card.level + card.family"
       :level="card.level"
       :family="familyToEmoji(card.family)"
-      :style="bgUrl(card)"
     >
     </li>
   </ul>
@@ -31,7 +30,7 @@ export default {
           return ''
       }
     },
-    bgUrl(card) {
+    bgClass(card) {
       let kind;
       if (card.family) {
         switch (card.family) {
@@ -54,7 +53,7 @@ export default {
       } else {
         kind = "t"; // tarot
       }
-      return `background-image: url('./cardgame/${kind}${card.level}.png');`
+      return kind + card.level;
     }
   },
   props: {

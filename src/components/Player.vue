@@ -4,8 +4,6 @@
     <CardList :cards="player.cards" @useCard="useCard" :stacked="true" :handed="true" />
     <br>
     <CardList :cards="player.mobs" @useCard="useCard" :stacked="true" />
-    <legend>{{ player.name }}</legend><br>
-    <strong>Score: {{ player.mobs.reduce((a, c) => a + c.level,0)}}</strong>
   </section>
 
 </template>
